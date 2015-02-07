@@ -58,7 +58,7 @@ class Repositories extends LaravelCommand
 
     public function fire()
     {
-        $this->info('Starting repisitories generation....');
+        $this->info('Starting repository generation....');
 
         // flush all generated and cached entities, etc
         \D2Cache::flushAll();
@@ -77,9 +77,6 @@ class Repositories extends LaravelCommand
             exit(-1);
         }
 
-        $repositoryName = $this->d2em->getConfiguration()->getDefaultRepositoryClassName();
-
-
         if( empty($metadatas) ) {
             $this->error('No metadata found to generate entities.');
             return -1;
@@ -94,8 +91,6 @@ class Repositories extends LaravelCommand
 
         $numRepositories = 0;
         $generator = new EntityRepositoryGenerator();
-
-        $generator->setDefaultRepositoryName($repositoryName);
 
         foreach ($metadatas as $metadata) {
             if ($metadata->customRepositoryClassName) {

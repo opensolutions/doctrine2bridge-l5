@@ -23,15 +23,27 @@ use Doctrine2Bridge\EventListeners\TablePrefix;
 class Doctrine2BridgeServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     /**
+     * Have we been configured?
+     */
+    private $configured = true;
+
+    /**
      * Bootstrap the application events.
      *
      * @return void
      */
-    public function boot( \Doctrine\Common\Cache\Cache $d2cache, \Doctrine\ORM\EntityManagerInterface $d2em )
+    public function boot( \Doctrine\Common\Cache\Cache $d2cache )
     {
         // handle publishing of config file:
         $this->handleConfigs();
 
+        if( !$this->configured ) {
+            if( isset( $_SERVER['argv'][1] ) && $_SERVER['argv'][1] != 'vendor:publish' )
+                echo "You must pubish the configuration files first: artisan vendor:publish\n";
+            return;
+        }
+
+        $d2em = $this->app->make( \Doctrine\ORM\EntityManagerInterface::class );
         $d2em->getConfiguration()->setMetadataCacheImpl( $d2cache );
         $d2em->getConfiguration()->setQueryCacheImpl( $d2cache );
         $d2em->getConnection()->getConfiguration()->setResultCacheImpl( $d2cache );
@@ -52,6 +64,13 @@ class Doctrine2BridgeServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function register()
     {
+        if( !Config::get( 'd2bdoctrine' ) ) {
+            if( isset( $_SERVER['argv'][1] ) && $_SERVER['argv'][1] != 'vendor:publish' )
+                echo "You must pubish the configuration files first: artisan vendor:publish\n";
+            $this->configured = false;
+            return;
+        }
+
         $this->registerEntityManager();
         $this->registerClassMetadataFactory();
         $this->registerConsoleCommands();

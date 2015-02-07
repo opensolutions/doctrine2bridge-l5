@@ -23,26 +23,31 @@ Insert the following in the packages (`require`) section of your composer.json f
 
 Generally speaking, we'll try and match our minor versions (2.4.x) with Doctrine's but you should always use the latest `x` version of this.
 
-Note that your minimum stability must be `dev` for Doctrine migrations. If the above command complains, ensure you have the following set in your `composer.json` file:
-
-    "minimum-stability": "dev"
-
 Add the service providers to your Laravel application in `app/config/app.php`. In the `'providers'` array add:
 
     'Doctrine2Bridge\Doctrine2CacheBridgeServiceProvider',
     'Doctrine2Bridge\Doctrine2BridgeServiceProvider',
 
-You'll need to public and edit the configuration file:
+You'll need to publish and edit the configuration files:
 
-    ./artisan config:publish opensolutions/doctrine2bridge
+    ./artisan vendor:publish --provider "Doctrine2Bridge\Doctrine2CacheBridgeServiceProvider"
+    ./artisan vendor:publish --provider "Doctrine2Bridge\Doctrine2BridgeServiceProvider"
 
-This should get you a fresh copy of the configuration file in the directory `app`:
+This should get you a fresh copy of the configuration files (`d2bcache.php` and `db2doctrine.php`) in the configs directory.
 
-    config/packages/vendor/opensolutions/doctrine2bridge
+Now, edit these as well as setting Laravel5's own `cache.php` and `database.php` appropriately.
 
-Documentation on integrating this with Laravel's own authentication system [can be found here](https://github.com/opensolutions/doctrine2bridge/wiki/Auth).
+The default directory for Doctrine2's xml schema is `database/xml`. This can be configured in `config/d2bdoctrine.php`.
+
+Documentation on integrating this with Laravel's own authentication system [can be found here](https://github.com/opensolutions/doctrine2bridge-l5/wiki/Auth).
 
 ## Usage
+
+Three singletons are created which can be injected via Laravel's IoC in the standard manner:
+
+ * `Doctrine\ORM\EntityManagerInterface` (which is an instance of Doctrine\ORM\EntityManager)
+ * `Doctrine\Common\Cache\Cache` (which is an instance of the appropriate cache provider)
+ * `Doctrine\ORM\Mapping\ClassMetadataFactory` (used in this package by the console generator commands)
 
 Two facades are provided - one for the Doctrine2 cache and the other for the entity manager. These can be used as follows:
 
@@ -55,7 +60,7 @@ Two facades are provided - one for the Doctrine2 cache and the other for the ent
 
 ## More Detailed Usage
 
-The configuration file by default expects to find XML schema definitions under `doctrine/schema`. Let's say for example we have a single schema file called `doctrine/schema/Entities.SampleEntity.dcm.xml` containing:
+The configuration file by default expects to find XML schema definitions under `database/xml`. Let's say for example we have a single schema file called `database/xml/Entities.SampleEntity.dcm.xml` containing:
 
     <?xml version="1.0"?>
     <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
@@ -67,16 +72,34 @@ The configuration file by default expects to find XML schema definitions under `
         </entity>
     </doctrine-mapping>
 
-Assuming you've configured your database connection parameters in the config file and you're positioning in the base directory of your project, we can create the entities, proxies and repositories with:
+Assuming you've configured your database connection parameters in the config file and you're positioned in the base directory of your project, we can create the entities, proxies and repositories with:
 
-    ./vendor/bin/doctrine2 orm:generate-entities app/models/
-    ./vendor/bin/doctrine2 orm:generate-proxies
-    ./vendor/bin/doctrine2 orm:generate-repositories app/models/
+    ./artisan d2b:generate:entities
+    ./artisan d2b:generate:proxies
+    ./artisan d2b:generate:repositories
+
+There is also a handy shortcut for this:
+
+    ./artisan d2b:generate:all
+
+Read the output of these commands as they may need to be run twice.
+
+We also bundle a full Doctrine2 CLI utilty so the above could also be done via:
+
+    ./vendor/bin/d2b-doctrine2 orm:generate-entities database/
+    ./vendor/bin/d2b-doctrine2 orm:generate-proxies
+    ./vendor/bin/d2b-doctrine2 orm:generate-repositories database/
 
 You can also (drop) and create the database with:
 
-    ./vendor/bin/doctrine2 orm:schema-tool:drop --force
-    ./vendor/bin/doctrine2 orm:schema-tool:create
+    ./artisan d2b:schema:drop --commit
+    ./artisan d2b:schema:create --commit
+
+And you can update and validate via:
+
+    ./artisan d2b:schema:update --commit
+    ./artisan d2b:schema:validate
+
 
 Now you can add some data to the database:
 
@@ -89,7 +112,7 @@ And query it:
 
     echo count( D2EM::getRepository( 'Entities\SampleEntity' )->findAll() );
 
-I use the excellent [ORM Designer](http://www.orm-designer.com/) to create and manage my XML schema files.
+I use the excellent [Skipper](http://www.skipper18.com/) to create and manage my XML schema files.
 
 ## Convenience Function for Repositories
 

@@ -57,17 +57,20 @@ class Doctrine2CacheBridgeServiceProvider extends \Illuminate\Support\ServicePro
             if(!class_exists($cacheClass))
                 throw new Exception\ImplementationNotFound( $cacheClass );
 
-            $cache = new $cacheClass;
-
-            if( Config::has( 'd2bcache.namespace') )
-                $cache->setNamespace( Config::get( 'd2bcache.namespace') );
-
             switch( $config['type'] )
             {
+                case 'FilesystemCache':
+                    $cache = new $cacheClass( $config['dir'] );
+                    break;
+
                 case 'MemcacheCache':
+                    $cache = new $cacheClass;
                     $cache->setMemcache( $this->setupMemcache( $config ) );
                     break;
             }
+
+            if( Config::has( 'd2bcache.namespace') )
+                $cache->setNamespace( Config::get( 'd2bcache.namespace') );
 
             return $cache;
         });
@@ -117,6 +120,12 @@ class Doctrine2CacheBridgeServiceProvider extends \Illuminate\Support\ServicePro
     {
         switch( Config::get( 'cache.default' ) ) {
             case 'file':
+                return [
+                    'type'      => 'FilesystemCache',
+                    'dir'       => Config::get( 'cache.stores.file.path' ) . DIRECTORY_SEPARATOR . 'doctine2.cache'
+                ];
+                break;
+
             case 'array':
                 return [
                     'type'      => 'ArrayCache',
