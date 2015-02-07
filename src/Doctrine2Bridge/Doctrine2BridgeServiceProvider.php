@@ -13,6 +13,8 @@ use Doctrine\ORM\Mapping\ClassMetadataFactory;
 
 use Doctrine2Bridge\EventListeners\TablePrefix;
 
+use \Doctrine2Bridge\Support\Repository as D2Repository;
+
 /**
  * Doctrine2 Bridge - Brings Doctrine2 to Laravel 5.
  *
@@ -74,6 +76,7 @@ class Doctrine2BridgeServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->registerEntityManager();
         $this->registerClassMetadataFactory();
         $this->registerConsoleCommands();
+        $this->registerRepositoryFacade();
         $this->registerFacades();
     }
 
@@ -147,6 +150,20 @@ class Doctrine2BridgeServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->app->singleton( ClassMetadataFactory::class, function( $app ) {
             return $app[EntityManagerInterface::class]->getMetadataFactory();
         });
+    }
+
+
+    private function registerRepositoryFacade()
+    {
+        $this->app->bind( D2Repository::class, function( $app ) {
+            return new D2Repository;
+        });
+
+        \App::booting( function() {
+            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+            $loader->alias( 'D2R', 'Doctrine2Bridge\Support\Facades\Doctrine2Repository' );
+        });
+
     }
 
     /**

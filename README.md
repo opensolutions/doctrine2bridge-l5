@@ -43,13 +43,14 @@ Documentation on integrating this with Laravel's own authentication system [can 
 
 ## Usage
 
-Three singletons are created which can be injected via Laravel's IoC in the standard manner:
+Four bindings are created which can be injected via Laravel's IoC in the standard manner:
 
  * `Doctrine\ORM\EntityManagerInterface` (which is an instance of Doctrine\ORM\EntityManager)
  * `Doctrine\Common\Cache\Cache` (which is an instance of the appropriate cache provider)
  * `Doctrine\ORM\Mapping\ClassMetadataFactory` (used in this package by the console generator commands)
+ * `Doctrine2Bridge\Support\Repository` (used by the `D2R` facade, see below)
 
-Two facades are provided - one for the Doctrine2 cache and the other for the entity manager. These can be used as follows:
+Three facades are provided - for the Doctrine2 cache, the entity manager and a convenience repository generator. These can be used as follows:
 
     D2Cache::save( $key, $value );
     D2Cache::fetch( $key );
@@ -57,6 +58,16 @@ Two facades are provided - one for the Doctrine2 cache and the other for the ent
     D2EM::persist( $object );
     D2EM::flush();
     $users = D2EM::getRepository( 'Entities\User' )->findAll();
+
+Typically we'd create and use a repository as follows:
+
+    $sample = D2EM::getRepository( '\Entities\SampleEntity' )->find(5);
+
+Assuming `d2bdoctrine.namespaces.models => 'Entities'`, the we can use the `D2R` facade in any of the following ways to achieve the same result:
+
+    $sample = D2R::r( 'SampleEntity' )->find(5);
+    $sample = D2R::r( 'Entities\SampleEntity' )->find(5);
+    $sample = D2R::r( 'SampleEntity', 'Entities' )->find(5);
 
 ## More Detailed Usage
 
@@ -116,16 +127,6 @@ I use the excellent [Skipper](http://www.skipper18.com/) to create and manage my
 
 ## Convenience Function for Repositories
 
-If, like me, you spend a lot of time typing `D2EM::getRepository( 'Entities\XXX' )`, then add the following to the end of `bootstrap/start.php`:
-
-    include $app['path.base'] . '/vendor/opensolutions/doctrine2bridge/src/bootstrap/d2r.php';
-
-and then you can replace the above with: `D2R( 'XXX' )`. I use *Entities* as my namespace generally so this function is just as follows (which you can easily change to suit yourself):
-
-    function D2R( $entity, $namespace = 'Entities' )
-    {
-        return D2EM::getRepository( $namespace . '\\' . $entity );
-    }
 
 ## SQL Query Logging
 
