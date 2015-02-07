@@ -18,14 +18,12 @@
     },
     "require": {
         "php": ">=5.5.0",
-        "doctrine/orm": ">=2.4.0",
-        "doctrine/migrations": "1.0.*@dev"
+        "doctrine/orm": ">=2.4.0"
     },
     "autoload": {
         "psr-0": {
             "Doctrine2Bridge": "src/"
         }
     },
-    "bin": [ "bin/d2b-doctrine2" ],
-    "minimum-stability": "dev"
+    "bin": [ "bin/d2b-doctrine2" ]
 }
