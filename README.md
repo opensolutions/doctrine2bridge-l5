@@ -137,3 +137,7 @@ This logger can be enabled in the configuration file.
 ## License
 
 Like the Laravel framework itself, this project is open-sourced under the [MIT license](http://opensource.org/licenses/MIT).
+
+## Inspiration
+
+Based on my original package [opensolutions/doctrine2bridge](https://github.com/opensolutions/doctrine2bridge) for Laravel4. Some additional inspiration when porting to Laravel5 from [mitchellvanw/laravel-doctrine](https://github.com/mitchellvanw/laravel-doctrine).
