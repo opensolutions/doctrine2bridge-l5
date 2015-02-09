@@ -52,9 +52,6 @@ class Doctrine2BridgeServiceProvider extends \Illuminate\Support\ServiceProvider
 
         if( Config::get( 'd2bdoctrine.sqllogger.enabled' ) )
             $this->attachLogger( $d2em );
-
-        if( Config::get( 'd2bdoctrine.auth.enabled' ) )
-            $this->setupAuth();
     }
 
 
@@ -78,6 +75,9 @@ class Doctrine2BridgeServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->registerConsoleCommands();
         $this->registerRepositoryFacade();
         $this->registerFacades();
+
+        if( Config::get( 'd2bdoctrine.auth.enabled' ) )
+            $this->setupAuth();
     }
 
     /**
