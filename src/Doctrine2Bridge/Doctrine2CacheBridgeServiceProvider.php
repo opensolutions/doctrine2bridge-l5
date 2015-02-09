@@ -59,6 +59,10 @@ class Doctrine2CacheBridgeServiceProvider extends \Illuminate\Support\ServicePro
 
             switch( $config['type'] )
             {
+                case 'ArrayCache':
+                    $cache = new $cacheClass();
+                    break;
+                    
                 case 'FilesystemCache':
                     $cache = new $cacheClass( $config['dir'] );
                     break;
