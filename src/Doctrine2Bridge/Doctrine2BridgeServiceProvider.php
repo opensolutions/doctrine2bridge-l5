@@ -185,7 +185,7 @@ class Doctrine2BridgeServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         Auth::extend( 'doctrine2bridge', function() {
             return new \Illuminate\Auth\Guard(
-                new Auth\Doctrine2UserProvider(
+                new \Doctrine2Bridge\Auth\Doctrine2UserProvider(
                     \D2EM::getRepository( Config::get( 'd2bdoctrine.auth.entity' ) ),
                     new \Illuminate\Hashing\BcryptHasher
                 ),

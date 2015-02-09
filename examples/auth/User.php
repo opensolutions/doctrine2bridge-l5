@@ -5,7 +5,7 @@ namespace Entities;
 /**
  * User
  */
-class User implements \Illuminate\Auth\UserInterface
+class User implements \Illuminate\Contracts\Auth\Authenticatable
 {
     /**
      * @var string
@@ -40,7 +40,7 @@ class User implements \Illuminate\Auth\UserInterface
     /**
      * Get username
      *
-     * @return string 
+     * @return string
      */
     public function getUsername()
     {
@@ -64,7 +64,7 @@ class User implements \Illuminate\Auth\UserInterface
     /**
      * Get password
      *
-     * @return string 
+     * @return string
      */
     public function getPassword()
     {
@@ -74,7 +74,7 @@ class User implements \Illuminate\Auth\UserInterface
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -106,5 +106,38 @@ class User implements \Illuminate\Auth\UserInterface
     {
         return $this->getPassword();
     }
+
+
+    /**
+     * Get the token value for the "remember me" session.
+     *
+     * @return string
+     */
+    public function getRememberToken()
+    {
+        return $this->remember_token;
+    }
+
+    /**
+     * Set the token value for the "remember me" session.
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setRememberToken($value)
+    {
+        $this->remember_token = $value;
+    }
+
+    /**
+     * Get the column name for the "remember me" token.
+     *
+     * @return string
+     */
+    public function getRememberTokenName()
+    {
+        return 'remember_token';
+    }
+
 
 }

@@ -10,12 +10,10 @@
 
 namespace Doctrine2Bridge\Auth;
 
-use Illuminate\Hashing\HasherInterface;
-
 /**
  * Class to provide a Doctrine2 user object for Laravel authentication.
  */
-class Doctrine2UserProvider implements \Illuminate\Auth\UserProviderInterface
+class Doctrine2UserProvider implements \Illuminate\Contracts\Auth\UserProvider
 {
     /**
      * The hasher implementation.
@@ -38,7 +36,7 @@ class Doctrine2UserProvider implements \Illuminate\Auth\UserProviderInterface
       * @param  \Illuminate\Hashing\HasherInterface  $hasher       The hasher implementation
       * @return void
       */
-    public function __construct( \Doctrine\ORM\EntityRepository $d2repository, HasherInterface $hasher )
+    public function __construct( \Doctrine\ORM\EntityRepository $d2repository, \Illuminate\Contracts\Hashing\Hasher $hasher )
     {
         $this->d2repository = $d2repository;
         $this->hasher       = $hasher;
@@ -100,7 +98,7 @@ class Doctrine2UserProvider implements \Illuminate\Auth\UserProviderInterface
      * @param  array  $credentials
      * @return bool
      */
-    public function validateCredentials( \Illuminate\Auth\UserInterface $user, array $credentials )
+    public function validateCredentials( \Illuminate\Contracts\Auth\Authenticatable $user, array $credentials )
     {
         $plain = $credentials['password'];
 
@@ -140,12 +138,11 @@ class Doctrine2UserProvider implements \Illuminate\Auth\UserProviderInterface
      * @param string $token
      * @return void
      */
-    public function updateRememberToken( \Illuminate\Auth\UserInterface $user, $token )
+    public function updateRememberToken( \Illuminate\Contracts\Auth\Authenticatable $user, $token )
     {
 
         $user->setRememberToken( $token );
         $this->d2repository->createQueryBuilder()->getEntityManager()->flush();
     }
-
 
 }
