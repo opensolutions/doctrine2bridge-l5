@@ -142,7 +142,7 @@ class Doctrine2UserProvider implements \Illuminate\Contracts\Auth\UserProvider
     {
 
         $user->setRememberToken( $token );
-        $this->d2repository->createQueryBuilder()->getEntityManager()->flush();
+        $this->d2repository->createQueryBuilder( 'u' )->getEntityManager()->flush();
     }
 
 }
