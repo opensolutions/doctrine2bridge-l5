@@ -121,6 +121,7 @@ class Doctrine2BridgeServiceProvider extends \Illuminate\Support\ServiceProvider
         \App::booting( function() {
             $loader = \Illuminate\Foundation\AliasLoader::getInstance();
             $loader->alias( 'D2EM', 'Doctrine2Bridge\Support\Facades\Doctrine2' );
+            $loader->alias( 'D2R',  'Doctrine2Bridge\Support\Facades\Doctrine2Repository' );
         });
     }
 
