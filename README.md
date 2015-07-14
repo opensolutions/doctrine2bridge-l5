@@ -63,7 +63,7 @@ Typically we'd create and use a repository as follows:
 
     $sample = D2EM::getRepository( '\Entities\SampleEntity' )->find(5);
 
-Assuming `d2bdoctrine.namespaces.models => 'Entities'`, the we can use the `D2R` facade in any of the following ways to achieve the same result:
+Assuming `d2bdoctrine.namespaces.models => 'Entities'`, then we can use the `D2R` facade in any of the following ways to achieve the same result:
 
     $sample = D2R::r( 'SampleEntity' )->find(5);
     $sample = D2R::r( 'Entities\SampleEntity' )->find(5);
