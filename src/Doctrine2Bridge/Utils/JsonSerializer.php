@@ -16,7 +16,7 @@ class JsonSerializor {
      * @return string
      */
     public static function json_encode($object, $depth=1, $whitelist=array(), $blacklist=array()){
-        return json_encode(Serializor::toArray($object, $depth, $whitelist, $blacklist));
+        return json_encode(self::toArray($object, $depth, $whitelist, $blacklist));
     }
 
     /**
@@ -47,13 +47,13 @@ class JsonSerializor {
             // The Loop
             foreach ($object as $value){
                 // Store the results
-                $anArray[] = Serializor::arrayizor($value, $depth, $whitelist, $blacklist);
+                $anArray[] = self::arrayizor($value, $depth, $whitelist, $blacklist);
             }
             // Return it
             return $anArray;
         }else{
             // Just return it
-            return Serializor::arrayizor($object, $depth, $whitelist, $blacklist);
+            return self::arrayizor($object, $depth, $whitelist, $blacklist);
         }
     }
 
@@ -135,13 +135,13 @@ class JsonSerializor {
                 }elseif(get_class($aValue) ==='Doctrine\ORM\PersistentCollection'){
                     $collect = array();
                     foreach ($aValue as $val){
-                        $collect[] = Serializor::toArray($val, $nextDepth, $whitelist, $blacklist);
+                        $collect[] = self::toArray($val, $nextDepth, $whitelist, $blacklist);
                     }
                     $anArray[$prop->name] = $collect;
-                    
+
                 // Otherwise, we can simply make it an array
                 }else{
-                    $anArray[$prop->name] = Serializor::toArray($aValue, $nextDepth, $whitelist, $blacklist);
+                    $anArray[$prop->name] = self::toArray($aValue, $nextDepth, $whitelist, $blacklist);
                 }
             // Otherwise, we just use the base value
             }else{
