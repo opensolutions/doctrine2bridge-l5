@@ -1,4 +1,4 @@
-**NB: You are advised to use this project from here on in: http://laraveldoctrine.org/ **
+# NB: You are advised to use this project from here on in: http://laraveldoctrine.org/ 
 
 # Doctrine2Bridge for Laravel 5
 
