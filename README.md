@@ -1,3 +1,5 @@
+**NB: You are advised to use this project from here on in: http://laraveldoctrine.org/ **
+
 # Doctrine2Bridge for Laravel 5
 
 Adds the power of Doctrine2 to Laraval 5 (including authentication and SQL query logging support).
